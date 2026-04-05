@@ -24,7 +24,7 @@ while (cont)
             item.Id = ++tempId;
             item.IsCompleted = false;
             tasks.Add(item);
-            Console.WriteLine("Task successfully added!");
+            Console.WriteLine($"Task {item.Id} successfully added!");
             break;
         case "2":
             Console.WriteLine("Following is the list of existing tasks :");
@@ -34,7 +34,25 @@ while (cont)
             }
             break;
         case "3":
-            //Mark complete code
+            Console.Write("Enter the Task ID : ");
+            int markId = Convert.ToInt32(Console.ReadLine());
+            for(int i = 0; i < tasks.Count; i++)
+            {
+                if(tasks.ElementAt(i).Id == markId)
+                {
+                    if (tasks.ElementAt(i).IsCompleted == true)
+                        Console.WriteLine("The task is already marked as complete!");
+                    else
+                    {
+                        tasks.ElementAt(i).IsCompleted = true;
+                        Console.WriteLine($"Task {markId} marked as complete.");
+                    }
+                    markId = -1;
+                    break;
+                }
+            }
+            if (markId != -1)
+                Console.WriteLine("Task ID not found!");
             break;
         case "4":
             cont = false;
@@ -43,4 +61,5 @@ while (cont)
             Console.WriteLine("Invalid option!");
             break;
     }
+    Console.WriteLine();
 }
