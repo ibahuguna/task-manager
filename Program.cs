@@ -1,7 +1,8 @@
 ﻿using TaskManager;
 
 List<TaskItem> tasks = new List<TaskItem>();
-TaskItem item = null;
+TaskItem item;
+int tempId = 0;
 
 bool cont = true;
 
@@ -16,10 +17,21 @@ while (cont)
     switch (option)
     {
         case "1":
-            // Add task code
+            Console.Write("Enter task title : ");
+            string title = Console.ReadLine();
+            item = new TaskItem();
+            item.Title = title;
+            item.Id = ++tempId;
+            item.IsCompleted = false;
+            tasks.Add(item);
+            Console.WriteLine("Task successfully added!");
             break;
         case "2":
-            //View tasks code
+            Console.WriteLine("Following is the list of existing tasks :");
+            foreach (var task in tasks)
+            {
+                Console.WriteLine($"{task.Id}: {task.Title} - {(task.IsCompleted ? "Done" : "Pending")}");
+            }
             break;
         case "3":
             //Mark complete code
