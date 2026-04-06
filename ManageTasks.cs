@@ -75,7 +75,7 @@ namespace TaskManager
             bool isValid = int.TryParse(Console.ReadLine(), out markId);
             if (!isValid)
             {
-                Console.WriteLine("Please enter a valid number.");
+                Console.WriteLine("Please enter a valid Id.");
                 return;
             }
             foreach (TaskItem task in tasks)
@@ -104,7 +104,7 @@ namespace TaskManager
             bool isValid = int.TryParse(Console.ReadLine(), out markId);
             if (!isValid)
             {
-                Console.WriteLine("Please enter a valid number.");
+                Console.WriteLine("Please enter a valid ID.");
                 return;
             }
             foreach (TaskItem task in tasks)
@@ -149,7 +149,86 @@ namespace TaskManager
 
         public void updateTask()
         {
+            Console.WriteLine("1. Change title\t\t2. Change priority");
+            string input = Console.ReadLine();
+            if(string.IsNullOrWhiteSpace(input) || !(input.Equals("1") || input.Equals("2"))){
+                Console.WriteLine("Invalid option!");
+                return;
+            }
+
+            Console.Write("Enter the Task ID : ");
+            int taskId;
+            bool found = false;
+            bool isValid = int.TryParse(Console.ReadLine(), out taskId);
+            if (!isValid)
+            {
+                Console.WriteLine("Invalid Task ID!");
+                return;
+            }
+            foreach (TaskItem task in tasks)
+            {
+                if (task.id == taskId)
+                {
+                    if(input.Equals("1"))
+                        updateTaskTitle(taskId);
+                    else if(input.Equals("2"))
+                        updateTaskPriority(taskId);
+                    found = true;
+                    break;
+                }
+            }
+            if (!found)
+                Console.WriteLine("Task ID not found!");
 
         }
+
+        public void updateTaskTitle(int taskId)
+        {
+            Console.Write("Enter new title : ");
+            string newTitle = Console.ReadLine();
+            if (string.IsNullOrWhiteSpace(newTitle))
+            {
+                Console.WriteLine("Task title cannot be empty.");
+                return;
+            }
+            foreach (TaskItem task in tasks)
+            {
+                if (task.id == taskId)
+                {
+                    task.title = newTitle;
+                    Console.WriteLine("Title updated!");
+                    break;
+                }
+            }
+
+        }
+
+        public void updateTaskPriority(int taskId)
+        {
+            Console.Write("Enter task priority as low, medium or high : ");
+            string p = Console.ReadLine();
+            if (string.IsNullOrWhiteSpace(p))
+            {
+                Console.WriteLine("No input;Cannot change priority.");
+                return;
+            }
+            else if (p.ToLower().Equals("low") || p.ToLower().Equals("medium") || p.ToLower().Equals("high"))
+                p = p.ToLower();
+            else
+            {
+                Console.WriteLine("Invalid priority!");
+                return;
+            }
+            foreach (TaskItem task in tasks)
+            {
+                if (task.id == taskId)
+                {
+                    task.priority = p;
+                    Console.WriteLine("Priority updated!");
+                    break;
+                }
+            }
+        }
+
     }
 }

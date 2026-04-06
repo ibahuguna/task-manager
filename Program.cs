@@ -22,6 +22,12 @@ while (cont)
             break;
         case "5":
             tm.SearchTask();
+            break; 
+        case "6":
+            tm.filterTask();
+            break;
+        case "7":
+            tm.updateTask();
             break;
         case "8":
             cont = false;
