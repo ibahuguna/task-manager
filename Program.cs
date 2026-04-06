@@ -21,6 +21,9 @@ while (cont)
             tm.DeleteTask();
             break;
         case "5":
+            tm.SearchTask();
+            break;
+        case "8":
             cont = false;
             break;
         default:

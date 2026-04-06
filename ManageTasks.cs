@@ -14,11 +14,10 @@ namespace TaskManager
         public string MenuChoice()
         {
             Console.WriteLine("Please choose an option : ");
-            Console.WriteLine("1. Add Task");
-            Console.WriteLine("2. View Tasks");
-            Console.WriteLine("3. Mark Complete");
-            Console.WriteLine("4. Delete Task");
-            Console.WriteLine("5. Exit");
+            Console.WriteLine("1. Add Task \t\t5. Search task");
+            Console.WriteLine("2. View Tasks \t\t6. Filter tasks");
+            Console.WriteLine("3. Mark Complete \t7. Update task");
+            Console.WriteLine("4. Delete Task \t\t 8. Exit");
             string option = Console.ReadLine();
             return option == null? "": option;
         }
@@ -36,14 +35,14 @@ namespace TaskManager
             string p = Console.ReadLine();
             if (string.IsNullOrWhiteSpace(p))
             {
-                Console.WriteLine("Setting default priority as low.");
+                Console.WriteLine("No input; setting priority to default(low).");
                 p = "low";
             }
             else if (p.ToLower().Equals("low") || p.ToLower().Equals("medium") || p.ToLower().Equals("high"))
                 p = p.ToLower();
             else
             {
-                Console.WriteLine("Invalid priority! Setting default priority as low.");
+                Console.WriteLine("Invalid priority! Setting priority to default(low).");
                 p = "low";
             }
             item = new TaskItem();
@@ -57,6 +56,11 @@ namespace TaskManager
 
         public void ViewTasks()
         {
+            if(tasks.Count == 0)
+            {
+                Console.WriteLine("Tasks list is empty!");
+                return;
+            }
             Console.WriteLine("Following is the list of existing tasks :");
             foreach (var task in tasks)
             {
@@ -118,5 +122,34 @@ namespace TaskManager
 
         }
 
+        public void SearchTask()
+        {
+            Console.Write("Enter search keyword : ");
+            string keyword = Console.ReadLine();
+            bool found = false;
+            if (string.IsNullOrWhiteSpace(keyword))
+            {
+                Console.WriteLine("Keyword cannot be empty or white space.");
+                return;
+            }
+            foreach (TaskItem task in tasks)
+                if (task.title.ToLower().Contains(keyword.ToLower()))
+                {
+                    Console.WriteLine($"{task.id}: {task.title} - {task.priority} priority - {(task.isCompleted ? "Done" : "Pending")}");
+                    found = true;
+                }
+            if (!found)
+                Console.WriteLine("Keyword not found.");
+        }
+
+        public void filterTask()
+        {
+
+        }
+
+        public void updateTask()
+        {
+
+        }
     }
 }
