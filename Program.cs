@@ -18,6 +18,9 @@ while (cont)
             tm.MarkComplete();
             break;
         case "4":
+            tm.DeleteTask();
+            break;
+        case "5":
             cont = false;
             break;
         default:

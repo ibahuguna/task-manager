@@ -17,8 +17,9 @@ namespace TaskManager
             Console.WriteLine("1. Add Task");
             Console.WriteLine("2. View Tasks");
             Console.WriteLine("3. Mark Complete");
-            Console.WriteLine("4. Exit");
-            String option = Console.ReadLine();
+            Console.WriteLine("4. Delete Task");
+            Console.WriteLine("5. Exit");
+            string option = Console.ReadLine();
             return option == null? "": option;
         }
 
@@ -65,6 +66,26 @@ namespace TaskManager
             }
             if (markId != -1)
                 Console.WriteLine("Task ID not found!");
+        }
+
+        public void DeleteTask()
+        {
+            Console.Write("Enter the Task ID : ");
+            string input = Console.ReadLine();
+            int markId = input == "" ? 0 : Convert.ToInt32(input);
+            for (int i = 0; i < tasks.Count; i++)
+            {
+                if (tasks.ElementAt(i).Id == markId)
+                {
+                    tasks.RemoveAt(i);
+                    Console.WriteLine($"Task ID {markId} deleted.");
+                    markId = -1;
+                    break;
+                }
+            }
+            if (markId != -1)
+                Console.WriteLine("Task ID not found!");
+
         }
     }
 }
