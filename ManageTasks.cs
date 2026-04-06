@@ -27,12 +27,32 @@ namespace TaskManager
         {
             Console.Write("Enter task title : ");
             string title = Console.ReadLine();
+            if (string.IsNullOrWhiteSpace(title)) 
+            {
+                Console.WriteLine("Task title cannot be empty.");
+                return;
+            }
+            Console.Write("Enter task priority as low, medium or high : ");
+            string p = Console.ReadLine();
+            if (string.IsNullOrWhiteSpace(p))
+            {
+                Console.WriteLine("Setting default priority as low.");
+                p = "low";
+            }
+            else if (p.ToLower().Equals("low") || p.ToLower().Equals("medium") || p.ToLower().Equals("high"))
+                p = p.ToLower();
+            else
+            {
+                Console.WriteLine("Invalid priority! Setting default priority as low.");
+                p = "low";
+            }
             item = new TaskItem();
-            item.Title = title;
-            item.Id = ++tempId;
-            item.IsCompleted = false;
+            item.title = title;
+            item.id = ++tempId;
+            item.priority = p;
+            item.isCompleted = false;
             tasks.Add(item);
-            Console.WriteLine($"Task {item.Id} successfully added!");
+            Console.WriteLine($"Task {item.id} successfully added!");
         }
 
         public void ViewTasks()
@@ -40,24 +60,29 @@ namespace TaskManager
             Console.WriteLine("Following is the list of existing tasks :");
             foreach (var task in tasks)
             {
-                Console.WriteLine($"{task.Id}: {task.Title} - {(task.IsCompleted ? "Done" : "Pending")}");
+                Console.WriteLine($"{task.id}: {task.title} - {task.priority} priority - {(task.isCompleted ? "Done" : "Pending")}");
             }
         }
 
         public void MarkComplete()
         {
             Console.Write("Enter the Task ID : ");
-            string input = Console.ReadLine();
-            int markId = input == ""? 0: Convert.ToInt32(input);
-            for (int i = 0; i < tasks.Count; i++)
+            int markId;
+            bool isValid = int.TryParse(Console.ReadLine(), out markId);
+            if (!isValid)
             {
-                if (tasks.ElementAt(i).Id == markId)
+                Console.WriteLine("Please enter a valid number.");
+                return;
+            }
+            foreach (TaskItem task in tasks)
+            {
+                if (task.id == markId)
                 {
-                    if (tasks.ElementAt(i).IsCompleted == true)
+                    if (task.isCompleted == true)
                         Console.WriteLine("The task is already marked as complete!");
                     else
                     {
-                        tasks.ElementAt(i).IsCompleted = true;
+                        task.isCompleted = true;
                         Console.WriteLine($"Task {markId} marked as complete.");
                     }
                     markId = -1;
@@ -71,13 +96,18 @@ namespace TaskManager
         public void DeleteTask()
         {
             Console.Write("Enter the Task ID : ");
-            string input = Console.ReadLine();
-            int markId = input == "" ? 0 : Convert.ToInt32(input);
-            for (int i = 0; i < tasks.Count; i++)
+            int markId;
+            bool isValid = int.TryParse(Console.ReadLine(), out markId);
+            if (!isValid)
             {
-                if (tasks.ElementAt(i).Id == markId)
+                Console.WriteLine("Please enter a valid number.");
+                return;
+            }
+            foreach (TaskItem task in tasks)
+            {
+                if (task.id == markId)
                 {
-                    tasks.RemoveAt(i);
+                    tasks.Remove(task);
                     Console.WriteLine($"Task ID {markId} deleted.");
                     markId = -1;
                     break;
@@ -87,5 +117,6 @@ namespace TaskManager
                 Console.WriteLine("Task ID not found!");
 
         }
+
     }
 }

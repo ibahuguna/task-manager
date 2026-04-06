@@ -6,8 +6,9 @@ namespace TaskManager
 {
     internal class TaskItem
     {
-        public int Id;
-        public string Title;
-        public bool IsCompleted;
+        public int id;
+        public string title;
+        public bool isCompleted;
+        public string priority;
     }
 }
