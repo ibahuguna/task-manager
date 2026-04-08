@@ -14,7 +14,7 @@ namespace TaskManager
         {
             Console.WriteLine("Please choose an option : ");
             Console.WriteLine("1. Add Task \t\t\t5. Search task");
-            Console.WriteLine("2. View Tasks \t\t\t6. Filter tasks");
+            Console.WriteLine("2. View Tasks \t\t\t6. Sort tasks");
             Console.WriteLine("3. Mark Complete \t\t7. Update task");
             Console.WriteLine("4. Delete Task \t\t\t8. Exit");
             string option = Console.ReadLine();
@@ -22,9 +22,7 @@ namespace TaskManager
         }
 
         public void AddTask()
-        {
-            item = new TaskItem();
- 
+        { 
             Console.Write("Enter task title : ");
             string title = Console.ReadLine();
             if (string.IsNullOrWhiteSpace(title)) 
@@ -32,6 +30,7 @@ namespace TaskManager
                 Console.WriteLine("Task title cannot be empty.");
                 return;
             }
+            item = new TaskItem();
             item.Title = title;
             
             Console.Write("Enter task priority as low, medium or high : ");
@@ -134,6 +133,21 @@ namespace TaskManager
         public void filterTask()
         {
 
+        }
+
+        public void sortTasks()
+        {
+            if (tasks.Count == 0)
+            {
+                Console.WriteLine("Tasks list is empty! Cannot perform operation.");
+                return;
+            }
+            Console.WriteLine("Sorting tasks by title : ");
+            List<TaskItem> taskList = (from task in tasks
+                                       orderby task.Title ascending
+                                       select task).ToList();
+            foreach(var t in taskList)  
+                Console.WriteLine($"{t.Id}: {t.Title} - {t.Priority} priority - {(t.IsCompleted ? "Done" : "Pending")}"); 
         }
 
         public void updateTask()

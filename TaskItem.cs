@@ -13,12 +13,7 @@ namespace TaskManager
         private static int newId = 0;
 
         public int Id { get; set; }
-        public string Title
-        {
-            get { return title; }
-            set { title = value; }
-        }
-        
+        public string Title { get; set; }
         public bool IsCompleted { get; set; }
         public string Priority { 
             get { return priority; } 

@@ -24,7 +24,7 @@ while (cont)
             tm.SearchTask();
             break; 
         case "6":
-            tm.filterTask();
+            tm.sortTasks();
             break;
         case "7":
             tm.updateTask();
