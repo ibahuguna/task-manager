@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 
 namespace TaskManager
@@ -9,21 +10,21 @@ namespace TaskManager
         List<TaskItem> tasks = new List<TaskItem>(); 
         TaskItem item;
         
-        int tempId = 0;
-
         public string MenuChoice()
         {
             Console.WriteLine("Please choose an option : ");
-            Console.WriteLine("1. Add Task \t\t5. Search task");
-            Console.WriteLine("2. View Tasks \t\t6. Filter tasks");
-            Console.WriteLine("3. Mark Complete \t7. Update task");
-            Console.WriteLine("4. Delete Task \t\t 8. Exit");
+            Console.WriteLine("1. Add Task \t\t\t5. Search task");
+            Console.WriteLine("2. View Tasks \t\t\t6. Filter tasks");
+            Console.WriteLine("3. Mark Complete \t\t7. Update task");
+            Console.WriteLine("4. Delete Task \t\t\t8. Exit");
             string option = Console.ReadLine();
             return option == null? "": option;
         }
 
         public void AddTask()
         {
+            item = new TaskItem();
+ 
             Console.Write("Enter task title : ");
             string title = Console.ReadLine();
             if (string.IsNullOrWhiteSpace(title)) 
@@ -31,27 +32,14 @@ namespace TaskManager
                 Console.WriteLine("Task title cannot be empty.");
                 return;
             }
+            item.Title = title;
+            
             Console.Write("Enter task priority as low, medium or high : ");
             string p = Console.ReadLine();
-            if (string.IsNullOrWhiteSpace(p))
-            {
-                Console.WriteLine("No input; setting priority to default(low).");
-                p = "low";
-            }
-            else if (p.ToLower().Equals("low") || p.ToLower().Equals("medium") || p.ToLower().Equals("high"))
-                p = p.ToLower();
-            else
-            {
-                Console.WriteLine("Invalid priority! Setting priority to default(low).");
-                p = "low";
-            }
-            item = new TaskItem();
-            item.title = title;
-            item.id = ++tempId;
-            item.priority = p;
-            item.isCompleted = false;
+            item.Priority = p;
+ 
             tasks.Add(item);
-            Console.WriteLine($"Task {item.id} successfully added!");
+            Console.WriteLine($"Task {item.Id} successfully added!");
         }
 
         public void ViewTasks()
@@ -64,12 +52,18 @@ namespace TaskManager
             Console.WriteLine("Following is the list of existing tasks :");
             foreach (var task in tasks)
             {
-                Console.WriteLine($"{task.id}: {task.title} - {task.priority} priority - {(task.isCompleted ? "Done" : "Pending")}");
+                Console.WriteLine($"{task.Id}: {task.Title} - {task.Priority} priority - {(task.IsCompleted ? "Done" : "Pending")}");
             }
         }
 
         public void MarkComplete()
         {
+            if (tasks.Count == 0)
+            {
+                Console.WriteLine("Tasks list is empty! Cannot perform operation.");
+                return;
+            }
+
             Console.Write("Enter the Task ID : ");
             int markId;
             bool isValid = int.TryParse(Console.ReadLine(), out markId);
@@ -78,68 +72,63 @@ namespace TaskManager
                 Console.WriteLine("Please enter a valid Id.");
                 return;
             }
-            foreach (TaskItem task in tasks)
+            List<TaskItem> taskList = (from task in tasks
+                                       where task.Id == markId
+                                       select task).ToList();
+            if (taskList.Count == 0)
+                Console.WriteLine("Task ID not found!");
+            else 
             {
-                if (task.id == markId)
+               if(taskList.First().IsCompleted == true)
+                    Console.WriteLine("The task is already marked as complete!");
+               else
                 {
-                    if (task.isCompleted == true)
-                        Console.WriteLine("The task is already marked as complete!");
-                    else
-                    {
-                        task.isCompleted = true;
-                        Console.WriteLine($"Task {markId} marked as complete.");
-                    }
-                    markId = -1;
-                    break;
+                    taskList.First().IsCompleted = true;
+                    Console.WriteLine($"Task {markId} marked as complete.");
                 }
             }
-            if (markId != -1)
-                Console.WriteLine("Task ID not found!");
         }
 
         public void DeleteTask()
         {
+            if (tasks.Count == 0)
+            {
+                Console.WriteLine("Tasks list is empty! Cannot perform operation.");
+                return;
+            }
             Console.Write("Enter the Task ID : ");
-            int markId;
-            bool isValid = int.TryParse(Console.ReadLine(), out markId);
+            int deleteId;
+            bool isValid = int.TryParse(Console.ReadLine(), out deleteId);
             if (!isValid)
             {
                 Console.WriteLine("Please enter a valid ID.");
                 return;
             }
-            foreach (TaskItem task in tasks)
-            {
-                if (task.id == markId)
-                {
-                    tasks.Remove(task);
-                    Console.WriteLine($"Task ID {markId} deleted.");
-                    markId = -1;
-                    break;
-                }
-            }
-            if (markId != -1)
+            int result = tasks.RemoveAll(x => x.Id == deleteId);
+            if (result == 0)
                 Console.WriteLine("Task ID not found!");
-
+            else
+            {
+                Console.WriteLine($"Task {deleteId} deleted.");
+            }
         }
 
         public void SearchTask()
         {
+            if (tasks.Count == 0)
+            {
+                Console.WriteLine("Tasks list is empty!");
+                return;
+            }
             Console.Write("Enter search keyword : ");
             string keyword = Console.ReadLine();
-            bool found = false;
             if (string.IsNullOrWhiteSpace(keyword))
             {
                 Console.WriteLine("Keyword cannot be empty or white space.");
                 return;
             }
-            foreach (TaskItem task in tasks)
-                if (task.title.ToLower().Contains(keyword.ToLower()))
-                {
-                    Console.WriteLine($"{task.id}: {task.title} - {task.priority} priority - {(task.isCompleted ? "Done" : "Pending")}");
-                    found = true;
-                }
-            if (!found)
-                Console.WriteLine("Keyword not found.");
+            foreach (TaskItem task in tasks.Where(t => t.Title.ToLower().Contains(keyword)))
+                    Console.WriteLine($"{task.Id}: {task.Title} - {task.Priority} priority - {(task.IsCompleted ? "Done" : "Pending")}");
         }
 
         public void filterTask()
@@ -149,7 +138,13 @@ namespace TaskManager
 
         public void updateTask()
         {
-            Console.WriteLine("1. Change title\t\t2. Change priority");
+            if (tasks.Count == 0)
+            {
+                Console.WriteLine("Tasks list is empty! Cannot perform operation.");
+                return;
+            }
+
+            Console.WriteLine("1. Change title\t\t\t2. Change priority");
             string input = Console.ReadLine();
             if(string.IsNullOrWhiteSpace(input) || !(input.Equals("1") || input.Equals("2"))){
                 Console.WriteLine("Invalid option!");
@@ -158,32 +153,26 @@ namespace TaskManager
 
             Console.Write("Enter the Task ID : ");
             int taskId;
-            bool found = false;
             bool isValid = int.TryParse(Console.ReadLine(), out taskId);
             if (!isValid)
             {
                 Console.WriteLine("Invalid Task ID!");
                 return;
             }
-            foreach (TaskItem task in tasks)
-            {
-                if (task.id == taskId)
-                {
-                    if(input.Equals("1"))
-                        updateTaskTitle(taskId);
-                    else if(input.Equals("2"))
-                        updateTaskPriority(taskId);
-                    found = true;
-                    break;
-                }
-            }
-            if (!found)
-                Console.WriteLine("Task ID not found!");
-
+            if(input.Equals("1"))
+                updateTaskTitle(taskId);
+            else if(input.Equals("2"))
+                updateTaskPriority(taskId);
         }
 
         public void updateTaskTitle(int taskId)
         {
+            List<TaskItem> newList = tasks.Where(t => t.Id == taskId).ToList();
+            if (!newList.Any())
+            {
+                Console.WriteLine($"Task Id {taskId} not found!");
+                return;
+            }
             Console.Write("Enter new title : ");
             string newTitle = Console.ReadLine();
             if (string.IsNullOrWhiteSpace(newTitle))
@@ -191,43 +180,23 @@ namespace TaskManager
                 Console.WriteLine("Task title cannot be empty.");
                 return;
             }
-            foreach (TaskItem task in tasks)
-            {
-                if (task.id == taskId)
-                {
-                    task.title = newTitle;
-                    Console.WriteLine("Title updated!");
-                    break;
-                }
-            }
-
+            newList.First().Title = newTitle;
+            Console.WriteLine("Title updated!");
         }
 
         public void updateTaskPriority(int taskId)
         {
+            List<TaskItem> newList = tasks.Where(t => t.Id == taskId).ToList();
+            if (!newList.Any())
+            {
+                Console.WriteLine($"Task Id {taskId} not found!");
+                return;
+            }
+
             Console.Write("Enter task priority as low, medium or high : ");
             string p = Console.ReadLine();
-            if (string.IsNullOrWhiteSpace(p))
-            {
-                Console.WriteLine("No input;Cannot change priority.");
-                return;
-            }
-            else if (p.ToLower().Equals("low") || p.ToLower().Equals("medium") || p.ToLower().Equals("high"))
-                p = p.ToLower();
-            else
-            {
-                Console.WriteLine("Invalid priority!");
-                return;
-            }
-            foreach (TaskItem task in tasks)
-            {
-                if (task.id == taskId)
-                {
-                    task.priority = p;
-                    Console.WriteLine("Priority updated!");
-                    break;
-                }
-            }
+            newList.First().Priority = p;
+            Console.WriteLine("Priority updated!");
         }
 
     }
