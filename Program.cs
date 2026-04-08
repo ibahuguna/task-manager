@@ -30,6 +30,9 @@ while (cont)
             tm.updateTask();
             break;
         case "8":
+            tm.filterTasks();
+            break;
+        case "9":
             cont = false;
             break;
         default:
