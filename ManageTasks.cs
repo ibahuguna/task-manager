@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
+using System.Text.Json;
 
 namespace TaskManager
 {
     internal class ManageTasks
     {
-        List<TaskItem> tasks = new List<TaskItem>(); 
+        List<TaskItem> tasks; 
         TaskItem item;
         
         public string MenuChoice()
@@ -15,9 +16,9 @@ namespace TaskManager
             Console.WriteLine("Please choose an option : ");
             Console.WriteLine("1. Add Task \t\t\t6. Sort Tasks");
             Console.WriteLine("2. View Tasks \t\t\t7. Update Task");
-            Console.WriteLine("3. Mark Complete \t\t8. Filter Tasks");
-            Console.WriteLine("4. Delete Task \t\t\t9. Exit");
-            Console.WriteLine("5. Search Tasks");
+            Console.WriteLine("3. Mark Complete\t\t8. Filter Tasks");
+            Console.WriteLine("4. Delete Task\t\t\t9. Print JSON");
+            Console.WriteLine("5. Search Tasks\t\t\t10. Exit");
             string option = Console.ReadLine();
             return option == null? "": option;
         }
@@ -31,7 +32,9 @@ namespace TaskManager
                 Console.WriteLine("Task title cannot be empty.");
                 return;
             }
-            item = new TaskItem();
+            int nextId = tasks.Any() ? tasks.Max(t => t.Id) + 1 : 1;
+
+            item = new TaskItem(nextId);
             item.Title = title;
             
             Console.Write("Enter task priority as low, medium or high : ");
@@ -131,7 +134,7 @@ namespace TaskManager
                     Console.WriteLine($"{task.Id}: {task.Title} - {task.Priority} priority - {(task.IsCompleted ? "Done" : "Pending")}");
         }
 
-        public void sortTasks()
+        public void SortTasks()
         {
             if (tasks.Count == 0)
             {
@@ -143,7 +146,7 @@ namespace TaskManager
                 Console.WriteLine($"{t.Id}: {t.Title} - {t.Priority} priority - {(t.IsCompleted ? "Done" : "Pending")}"); 
         }
 
-        public void updateTask()
+        public void UpdateTask()
         {
             if (tasks.Count == 0)
             {
@@ -206,7 +209,7 @@ namespace TaskManager
             Console.WriteLine("Priority updated!");
         }
 
-        public void filterTasks()
+        public void FilterTasks()
         {
             if (tasks.Count == 0)
             {
@@ -237,6 +240,29 @@ namespace TaskManager
             }
             foreach(TaskItem t in taskList)
                 Console.WriteLine($"{t.Id}: {t.Title} - {t.Priority} priority - {(t.IsCompleted ? "Done" : "Pending")}");
+        }
+
+        public void SaveToFile()
+        {
+            var json = JsonSerializer.Serialize(tasks);
+            File.WriteAllText("tasks.json", json);
+        }
+
+        public void LoadFromFile()
+        {
+            if (File.Exists("tasks.json"))
+            {
+                var json = File.ReadAllText("tasks.json");
+                tasks = JsonSerializer.Deserialize<List<TaskItem>>(json) ?? 
+                    new List<TaskItem>();
+            }
+        }
+
+        public void PrintJson()
+        {
+            var json = JsonSerializer.Serialize(tasks,
+                new JsonSerializerOptions { WriteIndented = true });
+            Console.WriteLine(json);
         }
     }
 }

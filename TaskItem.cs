@@ -10,7 +10,7 @@ namespace TaskManager
         private string title;
         private bool isCompleted;
         private string priority;
-        private static int newId = 0;
+        //private static int newId = 0;
 
         public int Id { get; set; }
         public string Title { get; set; }
@@ -33,10 +33,12 @@ namespace TaskManager
             } 
         }
 
-        public TaskItem()
+        public TaskItem() { }
+
+        public TaskItem(int newId)
         {
             IsCompleted = false;
-            Id = ++newId;
+            Id = newId;
         }
     }
 }
