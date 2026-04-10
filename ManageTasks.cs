@@ -6,27 +6,29 @@ using System.Text.Json;
 
 namespace TaskManager
 {
-    internal class ManageTasks
+    public class ManageTasks
     {
         List<TaskItem> tasks; 
         TaskItem item;
         
+        //Menu Options
         public string MenuChoice()
         {
-            Console.WriteLine("Please choose an option : ");
-            Console.WriteLine("1. Add Task \t\t\t7. Update Task");
+            Console.WriteLine("\n\n1. Add Task \t\t\t7. Update Task");
             Console.WriteLine("2. View Tasks \t\t\t8. Filter Tasks by Priority");
             Console.WriteLine("3. Mark Complete\t\t9. Filter Tasks by Completion Status");
             Console.WriteLine("4. Delete Task\t\t\t10. Print JSON");
             Console.WriteLine("5. Search Tasks\t\t\t11. Exit");
             Console.WriteLine("6. Sort Tasks\t\t\t");
+            Console.Write("Please choose an option : ");
             string option = Console.ReadLine();
             return option == null? "": option;
         }
 
+        //Adding a new task to the list
         public void AddTask()
         { 
-            Console.Write("Enter task title : ");
+            Console.Write("\nEnter task title : ");
             string title = Console.ReadLine();
             if (string.IsNullOrWhiteSpace(title)) 
             {
@@ -46,29 +48,31 @@ namespace TaskManager
             Console.WriteLine($"Task {item.Id} successfully added!");
         }
 
+        //View the complete list of tasks along with their details
         public void ViewTasks()
         {
             if(tasks.Count == 0)
             {
-                Console.WriteLine("Tasks list is empty!");
+                Console.WriteLine("\nTasks list is empty!");
                 return;
             }
-            Console.WriteLine("Following is the list of existing tasks :");
+            Console.WriteLine("\nFollowing is the list of existing tasks :");
             foreach (var task in tasks)
             {
                 Console.WriteLine($"{task.Id}: {task.Title} - {task.Priority} priority - {(task.IsCompleted ? "Done" : "Pending")}");
             }
         }
 
+        //Mark a chosen task as complete
         public void MarkComplete()
         {
             if (tasks.Count == 0)
             {
-                Console.WriteLine("Tasks list is empty! Cannot perform operation.");
+                Console.WriteLine("\nTasks list is empty! Cannot perform operation.");
                 return;
             }
 
-            Console.Write("Enter the Task ID : ");
+            Console.Write("\nEnter the Task ID : ");
             int markId;
             bool isValid = int.TryParse(Console.ReadLine(), out markId);
             if (!isValid)
@@ -93,6 +97,7 @@ namespace TaskManager
             }
         }
 
+        //Delete a chosen task
         public void DeleteTask()
         {
             if (tasks.Count == 0)
@@ -100,7 +105,7 @@ namespace TaskManager
                 Console.WriteLine("Tasks list is empty! Cannot perform operation.");
                 return;
             }
-            Console.Write("Enter the Task ID : ");
+            Console.Write("\nEnter the Task ID : ");
             int deleteId;
             bool isValid = int.TryParse(Console.ReadLine(), out deleteId);
             if (!isValid)
@@ -117,14 +122,15 @@ namespace TaskManager
             }
         }
 
+        //Search task by name or keyword
         public void SearchTask()
         {
             if (tasks.Count == 0)
             {
-                Console.WriteLine("Tasks list is empty!");
+                Console.WriteLine("\nTasks list is empty!");
                 return;
             }
-            Console.Write("Enter search keyword : ");
+            Console.Write("\nEnter search keyword : ");
             string keyword = Console.ReadLine();
             if (string.IsNullOrWhiteSpace(keyword))
             {
@@ -135,27 +141,29 @@ namespace TaskManager
                     Console.WriteLine($"{task.Id}: {task.Title} - {task.Priority} priority - {(task.IsCompleted ? "Done" : "Pending")}");
         }
 
+        //Sort and print tasks in alphabetical order
         public void SortTasks()
         {
             if (tasks.Count == 0)
             {
-                Console.WriteLine("Tasks list is empty! Cannot perform operation.");
+                Console.WriteLine("\nTasks list is empty! Cannot perform operation.");
                 return;
             }
-            Console.WriteLine("Sorting tasks by title : ");
+            Console.WriteLine("\nSorting tasks by title : ");
             foreach(var t in tasks.OrderBy(x => x.Title))  
                 Console.WriteLine($"{t.Id}: {t.Title} - {t.Priority} priority - {(t.IsCompleted ? "Done" : "Pending")}"); 
         }
 
+        //Edit/Update a chosen task  
         public void UpdateTask()
         {
             if (tasks.Count == 0)
             {
-                Console.WriteLine("Tasks list is empty! Cannot perform operation.");
+                Console.WriteLine("\nTasks list is empty! Cannot perform operation.");
                 return;
             }
 
-            Console.WriteLine("1. Change title\t\t\t2. Change priority");
+            Console.WriteLine("\n1. Change title\t\t\t2. Change priority");
             string input = Console.ReadLine();
             if(string.IsNullOrWhiteSpace(input) || !(input.Equals("1") || input.Equals("2"))){
                 Console.WriteLine("Invalid option!");
@@ -176,6 +184,7 @@ namespace TaskManager
                 updateTaskPriority(taskId);
         }
 
+        //Edit a task title
         public void updateTaskTitle(int taskId)
         {
             List<TaskItem> newList = tasks.Where(t => t.Id == taskId).ToList();
@@ -195,6 +204,7 @@ namespace TaskManager
             Console.WriteLine("Title updated!");
         }
 
+        //Edit a task priority
         public void updateTaskPriority(int taskId)
         {
             List<TaskItem> newList = tasks.Where(t => t.Id == taskId).ToList();
@@ -210,15 +220,16 @@ namespace TaskManager
             Console.WriteLine("Priority updated!");
         }
 
+        //List tasks by chosen priority
         public void FilterByPriority()
         {
             if (tasks.Count == 0)
             {
-                Console.WriteLine("Tasks list is empty! Cannot perform operation.");
+                Console.WriteLine("\nTasks list is empty! Cannot perform operation.");
                 return;
             }
 
-            Console.WriteLine("Filter by Priority");
+            Console.WriteLine("\nFilter by Priority");
             Console.WriteLine("1. Low\t\t\t2. Medium\t\t\t3. High");
             string input = Console.ReadLine();
             if (string.IsNullOrWhiteSpace(input) || !(input.Equals("1") || input.Equals("2") || input.Equals("3")))
@@ -243,15 +254,16 @@ namespace TaskManager
                 Console.WriteLine($"{t.Id}: {t.Title} - {t.Priority} priority - {(t.IsCompleted ? "Done" : "Pending")}");
         }
 
+        //List tasks by chosen completion staus
         public void FilterByCompletionStatus()
         {
             if (tasks.Count == 0)
             {
-                Console.WriteLine("Tasks list is empty! Cannot perform operation.");
+                Console.WriteLine("\nTasks list is empty! Cannot perform operation.");
                 return;
             }
 
-            Console.WriteLine("Filter by Completion Status");
+            Console.WriteLine("\nFilter by Completion Status");
             Console.WriteLine("1. Pending\t\t\t2. Complete");
             string input = Console.ReadLine();
             if (string.IsNullOrWhiteSpace(input) || !(input.Equals("1") || input.Equals("2")))
@@ -268,12 +280,14 @@ namespace TaskManager
                 Console.WriteLine($"{t.Id}: {t.Title} - {t.Priority} priority - {(t.IsCompleted ? "Done" : "Pending")}");
         }
 
+        //Save the list of tasks to a JSON file
         public void SaveToFile()
         {
             var json = JsonSerializer.Serialize(tasks);
             File.WriteAllText("tasks.json", json);
         }
 
+        //Load list of tasks from JSON file
         public void LoadFromFile()
         {
             if (File.Exists("tasks.json"))
@@ -284,6 +298,7 @@ namespace TaskManager
             }
         }
 
+        //Pretty print the Tasks JSON file
         public void PrintJson()
         {
             var json = JsonSerializer.Serialize(tasks,
