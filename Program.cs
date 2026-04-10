@@ -35,12 +35,15 @@ while (cont)
             tm.SaveToFile();
             break;
         case "8":
-            tm.FilterTasks();
+            tm.FilterByPriority();
             break;
         case "9":
-            tm.PrintJson();
+            tm.FilterByCompletionStatus();
             break;
         case "10":
+            tm.PrintJson();
+            break;
+        case "11":
             cont = false;
             break;
         default:

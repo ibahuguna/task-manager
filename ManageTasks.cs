@@ -14,11 +14,12 @@ namespace TaskManager
         public string MenuChoice()
         {
             Console.WriteLine("Please choose an option : ");
-            Console.WriteLine("1. Add Task \t\t\t6. Sort Tasks");
-            Console.WriteLine("2. View Tasks \t\t\t7. Update Task");
-            Console.WriteLine("3. Mark Complete\t\t8. Filter Tasks");
-            Console.WriteLine("4. Delete Task\t\t\t9. Print JSON");
-            Console.WriteLine("5. Search Tasks\t\t\t10. Exit");
+            Console.WriteLine("1. Add Task \t\t\t7. Update Task");
+            Console.WriteLine("2. View Tasks \t\t\t8. Filter Tasks by Priority");
+            Console.WriteLine("3. Mark Complete\t\t9. Filter Tasks by Completion Status");
+            Console.WriteLine("4. Delete Task\t\t\t10. Print JSON");
+            Console.WriteLine("5. Search Tasks\t\t\t11. Exit");
+            Console.WriteLine("6. Sort Tasks\t\t\t");
             string option = Console.ReadLine();
             return option == null? "": option;
         }
@@ -209,7 +210,7 @@ namespace TaskManager
             Console.WriteLine("Priority updated!");
         }
 
-        public void FilterTasks()
+        public void FilterByPriority()
         {
             if (tasks.Count == 0)
             {
@@ -239,6 +240,31 @@ namespace TaskManager
                     break;
             }
             foreach(TaskItem t in taskList)
+                Console.WriteLine($"{t.Id}: {t.Title} - {t.Priority} priority - {(t.IsCompleted ? "Done" : "Pending")}");
+        }
+
+        public void FilterByCompletionStatus()
+        {
+            if (tasks.Count == 0)
+            {
+                Console.WriteLine("Tasks list is empty! Cannot perform operation.");
+                return;
+            }
+
+            Console.WriteLine("Filter by Completion Status");
+            Console.WriteLine("1. Pending\t\t\t2. Complete");
+            string input = Console.ReadLine();
+            if (string.IsNullOrWhiteSpace(input) || !(input.Equals("1") || input.Equals("2")))
+            {
+                Console.WriteLine("Invalid option!");
+                return;
+            }
+            List<TaskItem> taskList = null;
+            if(input == "1")
+                taskList = tasks.Where(x => x.IsCompleted == false).ToList();
+            else
+                    taskList = tasks.Where(x => x.IsCompleted == true).ToList();
+            foreach (TaskItem t in taskList)
                 Console.WriteLine($"{t.Id}: {t.Title} - {t.Priority} priority - {(t.IsCompleted ? "Done" : "Pending")}");
         }
 
