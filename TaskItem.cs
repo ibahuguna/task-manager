@@ -6,11 +6,7 @@ namespace TaskManager
 {
     internal class TaskItem
     {
-        private int id;
-        private string title;
-        private bool isCompleted;
         private string priority;
-        //private static int newId = 0;
 
         public int Id { get; set; }
         public string Title { get; set; }
@@ -35,10 +31,12 @@ namespace TaskManager
 
         public TaskItem() { }
 
-        public TaskItem(int newId)
+        public TaskItem(int id, string title, string priority)
         {
             IsCompleted = false;
-            Id = newId;
+            Id = id;
+            Title = title;
+            Priority = priority;
         }
     }
 }

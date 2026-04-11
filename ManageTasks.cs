@@ -37,13 +37,11 @@ namespace TaskManager
             }
             int nextId = tasks.Any() ? tasks.Max(t => t.Id) + 1 : 1;
 
-            item = new TaskItem(nextId);
-            item.Title = title;
-            
             Console.Write("Enter task priority as low, medium or high : ");
-            string p = Console.ReadLine();
-            item.Priority = p;
- 
+            string priority = Console.ReadLine();
+
+            item = new TaskItem(nextId, title, priority);
+             
             tasks.Add(item);
             Console.WriteLine($"Task {item.Id} successfully added!");
         }
@@ -293,9 +291,11 @@ namespace TaskManager
             if (File.Exists("tasks.json"))
             {
                 var json = File.ReadAllText("tasks.json");
-                tasks = JsonSerializer.Deserialize<List<TaskItem>>(json) ?? 
-                    new List<TaskItem>();
+                tasks = JsonSerializer.Deserialize<List<TaskItem>>(json) ??
+                    [];
             }
+            else
+                tasks = new List<TaskItem>();
         }
 
         //Pretty print the Tasks JSON file
